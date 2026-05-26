@@ -1,0 +1,4 @@
+# ManifestVault
+
+Initial repository baseline.
+

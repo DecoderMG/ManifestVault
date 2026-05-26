@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: manifestvault-sample
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: manifestvault-sample
+  template:
+    metadata:
+      labels:
+        app: manifestvault-sample
+    spec:
+      containers:
+        - name: app
+          image: ghcr.io/example/manifestvault-sample:latest

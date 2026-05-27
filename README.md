@@ -1,6 +1,8 @@
 # ManifestVault
 
-ManifestVault analyzes deployment manifests and produces a structured report. This repository currently contains the Rust engine scaffold: a CLI binary, async scan pipeline entry point, and empty module surfaces for later manifest parsing, layer/SBOM extraction, and scoring work.
+ManifestVault analyzes deployment manifests and produces a structured report. This repository currently contains the Rust engine scaffold: a CLI binary, async scan pipeline entry point, strict Kubernetes manifest parsing, and empty module surfaces for later layer/SBOM extraction and scoring work.
+
+The parser targets Kubernetes 1.30 through the single pinned `k8s-openapi` feature `v1_30`.
 
 ## Prerequisites
 

@@ -1,0 +1,32 @@
+{
+  "id": "CVE-2024-0001",
+  "aliases": ["GHSA-openssl-test"],
+  "summary": "Test OpenSSL vulnerability for ManifestVault scoring",
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "8.1"
+    }
+  ],
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Alpine:v3.18",
+        "name": "openssl"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "3.1.4-r0"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

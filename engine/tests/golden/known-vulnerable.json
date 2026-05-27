@@ -1,0 +1,40 @@
+{
+  "workloads": [
+    {
+      "workload_ref": {
+        "kind": "Pod",
+        "name": "known-vulnerable",
+        "namespace": "platform"
+      },
+      "findings": [
+        {
+          "workload": "platform/known-vulnerable",
+          "container": "app",
+          "package": {
+            "name": "openssl",
+            "version": "3.1.0-r0",
+            "ecosystem": "alpine",
+            "source_path": "/lib/apk/db/installed",
+            "layer_depth": 0
+          },
+          "cve": {
+            "id": "CVE-2024-0001",
+            "aliases": [
+              "GHSA-openssl-test"
+            ],
+            "summary": "Test OpenSSL vulnerability for ManifestVault scoring",
+            "cvss_score": 8.1
+          },
+          "severity": "high",
+          "contributing_factors": [
+            "entrypoint_binary",
+            "severity:high",
+            "base_layer"
+          ],
+          "score": 9.8
+        }
+      ],
+      "cii_total": 9.8
+    }
+  ]
+}

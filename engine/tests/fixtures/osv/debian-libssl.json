@@ -1,0 +1,19 @@
+{
+  "id": "CVE-2024-0002",
+  "summary": "Debian fixture vulnerability",
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "5.0"
+    }
+  ],
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Debian",
+        "name": "libssl3"
+      },
+      "versions": ["3.0.11-1"]
+    }
+  ]
+}

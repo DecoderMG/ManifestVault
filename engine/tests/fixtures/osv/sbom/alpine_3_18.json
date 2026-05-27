@@ -1,0 +1,17 @@
+{
+  "layers": [
+    {
+      "digest": "sha256:base",
+      "depth": 0,
+      "packages": [
+        {
+          "name": "openssl",
+          "version": "3.1.0-r0",
+          "ecosystem": "alpine",
+          "source_path": "/lib/apk/db/installed",
+          "binaries": ["/usr/bin/openssl"]
+        }
+      ]
+    }
+  ]
+}

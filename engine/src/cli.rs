@@ -19,6 +19,9 @@ pub enum Command {
 pub struct ScanArgs {
     pub path: PathBuf,
 
+    #[arg(long, value_name = "DIR")]
+    pub cve_feed: PathBuf,
+
     #[arg(long, value_enum, default_value_t = OutputFormat::Text)]
     pub output: OutputFormat,
 }
@@ -40,6 +43,8 @@ mod tests {
             "manifestvault",
             "scan",
             "./examples/sample.yaml",
+            "--cve-feed",
+            "./fixtures/osv",
             "--output",
             "json",
         ]);
@@ -50,6 +55,7 @@ mod tests {
                     args.path,
                     std::path::PathBuf::from("./examples/sample.yaml")
                 );
+                assert_eq!(args.cve_feed, std::path::PathBuf::from("./fixtures/osv"));
                 assert_eq!(args.output, OutputFormat::Json);
             }
         }

@@ -56,6 +56,7 @@ pub struct ContainerRef {
 #[derive(Debug, Clone, Copy, Eq, PartialEq, Serialize, Deserialize)]
 pub struct ContainerSecurityContext {
     pub allow_privilege_escalation: Option<bool>,
+    pub add_capabilities: Vec<String>,
     pub privileged: Option<bool>,
     pub read_only_root_filesystem: Option<bool>,
     pub run_as_group: Option<i64>,
@@ -525,6 +526,11 @@ fn normalize_containers(containers: &[Container]) -> Vec<ContainerRef> {
 fn normalize_security_context(security_context: &SecurityContext) -> ContainerSecurityContext {
     ContainerSecurityContext {
         allow_privilege_escalation: security_context.allow_privilege_escalation,
+        add_capabilities: security_context
+            .capabilities
+            .as_ref()
+            .and_then(|capabilities| capabilities.add.clone())
+            .unwrap_or_default(),
         privileged: security_context.privileged,
         read_only_root_filesystem: security_context.read_only_root_filesystem,
         run_as_group: security_context.run_as_group,

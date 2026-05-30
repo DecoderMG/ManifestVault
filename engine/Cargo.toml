@@ -24,3 +24,7 @@ tempfile.workspace = true
 [[bin]]
 name = "manifestvault"
 path = "src/main.rs"
+
+[[bench]]
+name = "scoring"
+harness = false

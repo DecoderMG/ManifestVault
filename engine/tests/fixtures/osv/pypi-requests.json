@@ -1,0 +1,28 @@
+{
+  "id": "CVE-2024-0003",
+  "summary": "PyPI fixture vulnerability",
+  "database_specific": {
+    "severity": "critical"
+  },
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "PyPI",
+        "name": "requests"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "2.0.0"
+            },
+            {
+              "fixed": "2.32.0"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

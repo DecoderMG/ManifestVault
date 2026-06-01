@@ -4,6 +4,10 @@ ManifestVault analyzes deployment manifests and produces a structured report. Th
 
 The parser targets Kubernetes 1.30 through the single pinned `k8s-openapi` feature `v1_30`.
 
+## Branch protection
+
+The default branch should require the GitHub Actions `ci` workflow to pass before merge. Configure branch protection on `main` to mark the `ci` check (fmt, clippy, test jobs) as required. Release artifacts for tagged commits are produced by the `release` workflow on `v*` tags.
+
 ## Prerequisites
 
 - Rust 1.95.0, installed with `rustup`

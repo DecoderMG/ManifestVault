@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: maintenance-shell
+  namespace: platform
+spec:
+  hostPID: true
+  containers:
+    - name: shell
+      image: debian:bookworm-slim
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: edge-cache
+  namespace: platform
+spec:
+  serviceName: edge-cache
+  selector:
+    matchLabels:
+      app: edge-cache
+  template:
+    metadata:
+      labels:
+        app: edge-cache
+    spec:
+      containers:
+        - name: cache
+          image: alpine:3.20
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000

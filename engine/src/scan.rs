@@ -47,9 +47,11 @@ fn load_workload_sbom(workload: &Workload, base_dir: &Path, cve_feed: &Path) -> 
     let mut sbom = Sbom::empty();
 
     for container in &workload.containers {
-        let container_sbom = match container.image.as_deref().and_then(|image| {
-            resolve_sbom_path(image, base_dir, cve_feed)
-        }) {
+        let container_sbom = match container
+            .image
+            .as_deref()
+            .and_then(|image| resolve_sbom_path(image, base_dir, cve_feed))
+        {
             Some(path) => load_container_sbom(&path, &container.name, container.image.clone())?,
             None => ContainerSbom::empty(container.name.clone(), container.image.clone()),
         };
@@ -81,15 +83,13 @@ fn resolve_sbom_path(image: &str, base_dir: &Path, cve_feed: &Path) -> Option<Pa
     candidates.push(base_dir.join("sbom").join(format!("{sanitized}.json")));
     candidates.push(cve_feed.join("sbom").join(format!("{sanitized}.json")));
 
-    candidates
-        .into_iter()
-        .find(|path| {
-            path.is_file()
-                && path
-                    .extension()
-                    .and_then(|extension| extension.to_str())
-                    .is_some_and(|extension| extension == "json")
-        })
+    candidates.into_iter().find(|path| {
+        path.is_file()
+            && path
+                .extension()
+                .and_then(|extension| extension.to_str())
+                .is_some_and(|extension| extension == "json")
+    })
 }
 
 fn sanitize_image_ref(image: &str) -> String {

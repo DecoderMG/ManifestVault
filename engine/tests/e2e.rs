@@ -82,8 +82,20 @@ fn render_canonical_report(mut report: Report) -> String {
 
         output.push_str("    {\n");
         output.push_str("      \"workload_ref\": {\n");
-        write_field(&mut output, 8, "kind", &json(&workload.workload_ref.kind), true);
-        write_field(&mut output, 8, "name", &json(&workload.workload_ref.name), true);
+        write_field(
+            &mut output,
+            8,
+            "kind",
+            &json(&workload.workload_ref.kind),
+            true,
+        );
+        write_field(
+            &mut output,
+            8,
+            "name",
+            &json(&workload.workload_ref.name),
+            true,
+        );
         write_field(
             &mut output,
             8,
@@ -193,13 +205,7 @@ fn render_string_array(
     values: &[String],
     trailing_comma: bool,
 ) {
-    write!(
-        output,
-        "{}\"{}\": [",
-        " ".repeat(indent),
-        field
-    )
-    .expect("write string array header");
+    write!(output, "{}\"{}\": [", " ".repeat(indent), field).expect("write string array header");
 
     if values.is_empty() {
         output.push(']');
@@ -226,13 +232,7 @@ fn render_string_array(
     output.push('\n');
 }
 
-fn write_field(
-    output: &mut String,
-    indent: usize,
-    field: &str,
-    value: &str,
-    trailing_comma: bool,
-) {
+fn write_field(output: &mut String, indent: usize, field: &str, value: &str, trailing_comma: bool) {
     write!(output, "{}\"{field}\": {value}", " ".repeat(indent)).expect("write json field");
     if trailing_comma {
         output.push(',');

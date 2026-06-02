@@ -15,4 +15,7 @@ pub use manifest::{
     ContainerRef, ContainerSecurityContext, ManifestError, Workload, WorkloadKind, parse_path,
 };
 pub use report::{CveFinding, Finding, PackageFinding, Report, WorkloadRef, WorkloadReport};
-pub use score::{AffectedPackage, AffectedRange, CiiScorer, Cve, CveDatabase, Scorer, Severity, score};
+pub use score::{
+    AffectedPackage, AffectedRange, CiiScorer, Cve, CveDatabase, RangeEvent, Scorer, Severity,
+    score,
+};

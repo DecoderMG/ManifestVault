@@ -143,8 +143,8 @@ mod tests {
         )
         .expect("sbom");
 
-        let sbom = load_container_sbom(&path, "app", Some("app:latest".to_owned()))
-            .expect("load sbom");
+        let sbom =
+            load_container_sbom(&path, "app", Some("app:latest".to_owned())).expect("load sbom");
 
         assert_eq!(sbom.container, "app");
         assert_eq!(sbom.image.as_deref(), Some("app:latest"));

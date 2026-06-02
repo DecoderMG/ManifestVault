@@ -33,10 +33,7 @@ pub enum EngineError {
     },
 
     #[error("invalid CVE feed {path:?}: {reason}")]
-    InvalidCveFeed {
-        path: PathBuf,
-        reason: &'static str,
-    },
+    InvalidCveFeed { path: PathBuf, reason: &'static str },
 
     #[error("manifest parser failed")]
     Manifest(#[from] ManifestError),

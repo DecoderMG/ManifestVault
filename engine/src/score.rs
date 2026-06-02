@@ -73,10 +73,11 @@ impl CveDatabase {
         let mut cves = Vec::new();
 
         for file in files {
-            let contents = fs::read_to_string(&file).map_err(|source| EngineError::ReadCveFeed {
-                path: file.clone(),
-                source,
-            })?;
+            let contents =
+                fs::read_to_string(&file).map_err(|source| EngineError::ReadCveFeed {
+                    path: file.clone(),
+                    source,
+                })?;
             let value: Value =
                 serde_json::from_str(&contents).map_err(|source| EngineError::ParseCveFeed {
                     path: file.clone(),
@@ -86,12 +87,13 @@ impl CveDatabase {
             match value {
                 Value::Array(items) => {
                     for item in items {
-                        let advisory: OsvAdvisory = serde_json::from_value(item).map_err(
-                            |source| EngineError::ParseCveFeed {
-                                path: file.clone(),
-                                source,
-                            },
-                        )?;
+                        let advisory: OsvAdvisory =
+                            serde_json::from_value(item).map_err(|source| {
+                                EngineError::ParseCveFeed {
+                                    path: file.clone(),
+                                    source,
+                                }
+                            })?;
                         cves.push(advisory.into_cve());
                     }
                 }
@@ -152,9 +154,7 @@ pub enum RangeEvent {
     Limit(String),
 }
 
-#[derive(
-    Debug, Clone, Copy, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize, Deserialize,
-)]
+#[derive(Debug, Clone, Copy, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum Severity {
     None,
@@ -242,7 +242,7 @@ pub fn score(workload: &Workload, sbom: &Sbom, cves: &CveDatabase) -> WorkloadRe
             .max()
             .unwrap_or(0);
         let mut layers = container_sbom.layers.iter().collect::<Vec<_>>();
-        layers.sort_by(|left, right| right.depth.cmp(&left.depth));
+        layers.sort_by_key(|layer| std::cmp::Reverse(layer.depth));
 
         for layer in layers {
             for package in &layer.packages {
@@ -262,8 +262,9 @@ pub fn score(workload: &Workload, sbom: &Sbom, cves: &CveDatabase) -> WorkloadRe
                     factors.push(format!("severity:{}", cve.severity.as_str()));
                     factors.push(depth_factor.to_owned());
 
-                    let finding_score =
-                        round_score(cve.severity.weight() * privilege_multiplier * depth_multiplier);
+                    let finding_score = round_score(
+                        cve.severity.weight() * privilege_multiplier * depth_multiplier,
+                    );
                     findings.push(Finding {
                         workload: workload_name.clone(),
                         container: container.name.clone(),
@@ -705,9 +706,9 @@ fn parse_cvss_v3_vector(raw: &str) -> Option<f64> {
         "R" => 0.62,
         _ => return None,
     };
-    let c = cvss_impact_metric(*metrics.get("C")?)?;
-    let i = cvss_impact_metric(*metrics.get("I")?)?;
-    let a = cvss_impact_metric(*metrics.get("A")?)?;
+    let c = cvss_impact_metric(metrics.get("C")?)?;
+    let i = cvss_impact_metric(metrics.get("I")?)?;
+    let a = cvss_impact_metric(metrics.get("A")?)?;
     let impact = 1.0 - (1.0 - c) * (1.0 - i) * (1.0 - a);
     if impact <= 0.0 {
         return Some(0.0);
@@ -715,8 +716,7 @@ fn parse_cvss_v3_vector(raw: &str) -> Option<f64> {
 
     let exploitability = 8.22 * av * ac * pr * ui;
     let base = if scope == "C" {
-        let impact_sub_score =
-            7.52 * (impact - 0.029) - 3.25 * (impact - 0.02).powi(15);
+        let impact_sub_score = 7.52 * (impact - 0.029) - 3.25 * (impact - 0.02).powi(15);
         1.08 * (impact_sub_score + exploitability).min(10.0)
     } else {
         let impact_sub_score = 6.42 * impact;
@@ -940,13 +940,21 @@ mod tests {
             database.find(&package("requests", "2.31.0", "pypi"))[0].id,
             "CVE-PYPI-1"
         );
-        assert!(database.find(&package("openssl", "3.1.5-r0", "apk")).is_empty());
+        assert!(
+            database
+                .find(&package("openssl", "3.1.5-r0", "apk"))
+                .is_empty()
+        );
     }
 
     #[test]
     fn privileged_container_multiplier_scores_branch() {
         let mut workload = workload();
-        workload.containers[0].security_context.as_mut().unwrap().privileged = Some(true);
+        workload.containers[0]
+            .security_context
+            .as_mut()
+            .unwrap()
+            .privileged = Some(true);
 
         let report = score(&workload, &sbom_at_depth(1), &database(Severity::High));
 
@@ -975,8 +983,16 @@ mod tests {
     #[test]
     fn root_container_multiplier_scores_branch() {
         let mut workload = workload();
-        workload.containers[0].security_context.as_mut().unwrap().run_as_non_root = None;
-        workload.containers[0].security_context.as_mut().unwrap().run_as_user = Some(0);
+        workload.containers[0]
+            .security_context
+            .as_mut()
+            .unwrap()
+            .run_as_non_root = None;
+        workload.containers[0]
+            .security_context
+            .as_mut()
+            .unwrap()
+            .run_as_user = Some(0);
 
         let report = score(&workload, &sbom_at_depth(1), &database(Severity::High));
 
@@ -1054,7 +1070,10 @@ mod tests {
 
     #[test]
     fn version_comparison_handles_revision_numbers() {
-        assert_eq!(version_cmp("3.1.0-r1", "3.1.0-r0"), std::cmp::Ordering::Greater);
+        assert_eq!(
+            version_cmp("3.1.0-r1", "3.1.0-r0"),
+            std::cmp::Ordering::Greater
+        );
         assert_eq!(version_cmp("2.31.0", "2.32.0"), std::cmp::Ordering::Less);
     }
 
@@ -1147,5 +1166,4 @@ mod tests {
             binaries: vec![format!("/usr/bin/{name}")],
         }
     }
-
 }

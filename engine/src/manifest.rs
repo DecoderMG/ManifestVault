@@ -53,7 +53,7 @@ pub struct ContainerRef {
     pub args: Vec<String>,
 }
 
-#[derive(Debug, Clone, Copy, Eq, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize)]
 pub struct ContainerSecurityContext {
     pub allow_privilege_escalation: Option<bool>,
     pub add_capabilities: Vec<String>,

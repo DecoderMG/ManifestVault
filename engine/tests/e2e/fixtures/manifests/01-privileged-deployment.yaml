@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: privileged-api
+  namespace: platform
+spec:
+  selector:
+    matchLabels:
+      app: privileged-api
+  template:
+    metadata:
+      labels:
+        app: privileged-api
+    spec:
+      hostNetwork: true
+      hostPID: true
+      containers:
+        - name: api
+          image: alpine:3.20
+          command: ["/usr/bin/openssl"]
+          securityContext:
+            privileged: true
+            runAsUser: 0
